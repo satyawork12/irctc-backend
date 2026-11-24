@@ -8,4 +8,4 @@ app.get("/", (req, res) => {
     res.status(200).send("User Service is running!");
 });
 
-export default app
+export default app;

@@ -8,8 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "start": "node dist/src/index.js",
+    "typecheck": "tsc --noEmit",
+    "db:test": "tsx src/scripts/db-test.ts"
   },
   "author": "",
   "license": "ISC",
