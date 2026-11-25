@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import * as userService from '../services/user.service.js';
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -39,7 +39,7 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 }
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response,next:NextFunction) => {
     const userData = req.body;
 
     try {
@@ -50,10 +50,7 @@ export const createUser = async (req: Request, res: Response) => {
             data: newUser,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to create user",
-        })
+        next(error);
     }
 
 
