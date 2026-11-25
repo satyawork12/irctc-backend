@@ -1,6 +1,6 @@
 import { prisma } from '../config/prisma.js';
 import bcrypt from 'bcrypt';
-import type { CreateUserInput } from "../validators/user.validator.js";
+import type { CreateUserInput, UpdateUserInput } from "../validators/user.validator.js";
 import { AppError } from '../utils/AppError.js';
 import { Prisma } from '../../generated/prisma/client.js';
 
@@ -65,6 +65,52 @@ export const createUser = async (userData: CreateUserInput) => {
             throw new AppError("Email or phone number already exists", 409);
         }
 
+        throw error;
+    }
+}
+
+export const updateUser = async (id: string, data: UpdateUserInput) => {
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data,
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phoneNumber: true,
+                role: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        })
+        return updatedUser;
+    }
+    catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2025") {
+                throw new AppError("User not found", 404);
+            }
+            if (error.code === "P2002") {
+                throw new AppError("Email or phone number already exists", 409);
+            }
+        }
+        throw error;
+    }
+}
+
+
+export const deleteUser = async (id: string) => {
+    try {
+        const deletedUser = await prisma.user.delete({
+            where: { id },
+        })
+    }
+    catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+            throw new AppError("User not found", 404);
+        }
         throw error;
     }
 }
