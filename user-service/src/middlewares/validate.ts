@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
 
+type ValidationTarget = "body" | "query" | "params";
 
-export const validate = (schema: ZodType) => {
+export const validate = (schema: ZodType, target: ValidationTarget = "body") => {
     return (req: Request, res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body);
         if (!result.success) {
@@ -16,7 +17,9 @@ export const validate = (schema: ZodType) => {
             });
             return;
         }
-        req.body = result.data;
+        if (target === "body") {
+            req.body = result.data;
+        }
         next();
     }
 }

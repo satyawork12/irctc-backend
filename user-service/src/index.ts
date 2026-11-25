@@ -1,21 +1,24 @@
 import app from "./app.js"
-import dotenv from "dotenv";
 import { env } from "./config/env.js";
+import { logger } from "./config/logger.js";
 import { prisma } from "./config/prisma.js";
 
 
 async function startServer() {
     try {
         await prisma.$connect();
-        console.log("Connected to the database successfully");
+        logger.info("Connected to the database successfully");
         const port = env.PORT || 3000;
 
         app.listen(port, () => {
-            console.log(`User Service is running on port ${port}`);
+            logger.info("User Service is running", { port });
         })
 
     } catch (err) {
-        console.error("Error starting server:", err);
+        logger.error("Error starting server", {
+            error: err instanceof Error ? err.message : String(err),
+            ...(err instanceof Error && err.stack ? { stack: err.stack } : {}),
+        });
         process.exit(1);
     }
 }

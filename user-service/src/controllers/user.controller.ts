@@ -38,6 +38,10 @@ export const getUserById = async (req: Request, res: Response) => {
         });
         return;
     }
+    res.status(200).json({
+        success: true,
+        data: user,
+    });
 }
 
 export const createUser = async (req: Request, res: Response) => {
