@@ -2,12 +2,14 @@ import app from "./app.js"
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { prisma } from "./config/prisma.js";
+import { redis } from "./config/redis.js";
 
 
 async function startServer() {
     try {
         await prisma.$connect();
         logger.info("Connected to the database successfully");
+        await redis.connect();
         const port = env.PORT || 3000;
 
         app.listen(port, () => {

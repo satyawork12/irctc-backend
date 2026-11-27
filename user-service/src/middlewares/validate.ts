@@ -5,7 +5,7 @@ type ValidationTarget = "body" | "query" | "params";
 
 export const validate = (schema: ZodType, target: ValidationTarget = "body") => {
     return (req: Request, res: Response, next: NextFunction) => {
-        const result = schema.safeParse(req.body);
+        const result = schema.safeParse(req[target]);
         if (!result.success) {
             res.status(400).json({
                 success: false,
@@ -17,9 +17,7 @@ export const validate = (schema: ZodType, target: ValidationTarget = "body") => 
             });
             return;
         }
-        if (target === "body") {
-            req.body = result.data;
-        }
+        req[target] = result.data;
         next();
     }
 }
